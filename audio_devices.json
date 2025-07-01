@@ -1,0 +1,170 @@
+[
+  {
+    "index": 0,
+    "name": "Microsoft Sound Mapper - Input"
+  },
+  {
+    "index": 1,
+    "name": "Stereo Mix (Realtek(R) Audio)"
+  },
+  {
+    "index": 2,
+    "name": "Microphone Array (Realtek(R) Au"
+  },
+  {
+    "index": 3,
+    "name": "Microsoft Sound Mapper - Output"
+  },
+  {
+    "index": 4,
+    "name": "Headphones (Realtek(R) Audio)"
+  },
+  {
+    "index": 5,
+    "name": "Speakers (Realtek(R) Audio)"
+  },
+  {
+    "index": 6,
+    "name": "FxSound Speakers (FxSound Audio"
+  },
+  {
+    "index": 7,
+    "name": "Primary Sound Capture Driver"
+  },
+  {
+    "index": 8,
+    "name": "Stereo Mix (Realtek(R) Audio)"
+  },
+  {
+    "index": 9,
+    "name": "Microphone Array (Realtek(R) Audio)"
+  },
+  {
+    "index": 10,
+    "name": "Primary Sound Driver"
+  },
+  {
+    "index": 11,
+    "name": "Headphones (Realtek(R) Audio)"
+  },
+  {
+    "index": 12,
+    "name": "Speakers (Realtek(R) Audio)"
+  },
+  {
+    "index": 13,
+    "name": "FxSound Speakers (FxSound Audio Enhancer)"
+  },
+  {
+    "index": 14,
+    "name": "Headphones (Realtek(R) Audio)"
+  },
+  {
+    "index": 15,
+    "name": "Speakers (Realtek(R) Audio)"
+  },
+  {
+    "index": 16,
+    "name": "FxSound Speakers (FxSound Audio Enhancer)"
+  },
+  {
+    "index": 17,
+    "name": "Stereo Mix (Realtek(R) Audio)"
+  },
+  {
+    "index": 18,
+    "name": "Microphone Array (Realtek(R) Audio)"
+  },
+  {
+    "index": 19,
+    "name": "Headset (@System32\\drivers\\bthhfenum.sys,#2;%1 Hands-Free%0\r\n;(SL-BS1025))"
+  },
+  {
+    "index": 20,
+    "name": "Headset (@System32\\drivers\\bthhfenum.sys,#2;%1 Hands-Free%0\r\n;(SL-BS1025))"
+  },
+  {
+    "index": 21,
+    "name": "Stereo Mix (Realtek HD Audio Stereo input)"
+  },
+  {
+    "index": 22,
+    "name": "Headphones 1 (Realtek HD Audio 2nd output with HAP)"
+  },
+  {
+    "index": 23,
+    "name": "Headphones 2 (Realtek HD Audio 2nd output with HAP)"
+  },
+  {
+    "index": 24,
+    "name": "PC Speaker (Realtek HD Audio 2nd output with HAP)"
+  },
+  {
+    "index": 25,
+    "name": "Microphone Array (Realtek HD Audio Mic input)"
+  },
+  {
+    "index": 26,
+    "name": "Speakers 1 (Realtek HD Audio output with HAP)"
+  },
+  {
+    "index": 27,
+    "name": "Speakers 2 (Realtek HD Audio output with HAP)"
+  },
+  {
+    "index": 28,
+    "name": "PC Speaker (Realtek HD Audio output with HAP)"
+  },
+  {
+    "index": 29,
+    "name": "Headset (@System32\\drivers\\bthhfenum.sys,#2;%1 Hands-Free%0\r\n;(Hades Wireless Headset))"
+  },
+  {
+    "index": 30,
+    "name": "Headset (@System32\\drivers\\bthhfenum.sys,#2;%1 Hands-Free%0\r\n;(Hades Wireless Headset))"
+  },
+  {
+    "index": 31,
+    "name": "Headphones ()"
+  },
+  {
+    "index": 32,
+    "name": "Headphones ()"
+  },
+  {
+    "index": 33,
+    "name": "Speakers ()"
+  },
+  {
+    "index": 34,
+    "name": "Input ()"
+  },
+  {
+    "index": 35,
+    "name": "Speakers ()"
+  },
+  {
+    "index": 36,
+    "name": "Headphones ()"
+  },
+  {
+    "index": 37,
+    "name": "Headset (@System32\\drivers\\bthhfenum.sys,#2;%1 Hands-Free%0\r\n;(Immortal 121))"
+  },
+  {
+    "index": 38,
+    "name": "Headset (@System32\\drivers\\bthhfenum.sys,#2;%1 Hands-Free%0\r\n;(Immortal 121))"
+  },
+  {
+    "index": 39,
+    "name": "Headphones ()"
+  },
+  {
+    "index": 40,
+    "name": "Headset (@System32\\drivers\\bthhfenum.sys,#2;%1 Hands-Free%0\r\n;(Boult Audio Maverick))"
+  },
+  {
+    "index": 41,
+    "name": "Headset (@System32\\drivers\\bthhfenum.sys,#2;%1 Hands-Free%0\r\n;(Boult Audio Maverick))"
+  }
+]
