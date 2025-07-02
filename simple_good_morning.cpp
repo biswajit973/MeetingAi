@@ -79,7 +79,7 @@ std::vector<std::string> GetAudioDevices() {
     // Use the built EXE from PyInstaller (adjust path if needed)
     std::unique_ptr<FILE, decltype(&_pclose)> pipe(_popen("dist/audio_transcriber.exe --list-devices", "r"), _pclose);
     if (!pipe) return devices;
-    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+    while (fgets(buffer.data(), static_cast<int>(buffer.size()), pipe.get()) != nullptr) {
         result += buffer.data();
     }
     size_t pos = 0, end;
@@ -154,12 +154,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
         }
 
         ImGuiWindowFlags window_flags = 0; // Allow resize, move, collapse, close
-        ImGui::Begin("Overlay", &show_overlay, window_flags); 
-        ImGui::Text("Invisible Overlay");
+        ImGui::SetNextWindowSize(ImVec2(600, 700), ImGuiCond_FirstUseEver);
+        ImGui::Begin("AI Transcription", &show_overlay, window_flags);
+        ImGui::Text("AI Transcription");
+        ImGui::Separator();
 
-        // Audio device dropdown
-        if (ImGui::BeginCombo("Audio Device", devices.empty() ? "None" : devices[current_device].name.c_str())) {
-            for (int n = 0; n < devices.size(); n++) {
+        // Audio input dropdown
+        ImGui::Text("Select Audio Input");
+        ImGui::SameLine();
+        if (ImGui::BeginCombo("##AudioDevice", devices.empty() ? "None" : devices[current_device].name.c_str(), 0)) {
+            for (int n = 0; n < static_cast<int>(devices.size()); n++) {
                 bool is_selected = (current_device == n);
                 if (ImGui::Selectable(devices[n].name.c_str(), is_selected))
                     current_device = n;
@@ -169,45 +173,82 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
             ImGui::EndCombo();
         }
 
-        // Start/Stop transcription
-        if (ImGui::Button(transcribing ? "Stop Transcription" : "Start Transcription")) {
+        // Start Transcribing button (large, blue)
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.13f, 0.55f, 0.95f, 1.0f));
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.18f, 0.65f, 1.0f, 1.0f));
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.10f, 0.45f, 0.85f, 1.0f));
+        // Use plain text label to avoid Unicode escape errors
+        if (ImGui::Button(transcribing ? "Stop Transcribing" : "Start Transcribing", ImVec2(400, 0))) {
             if (!transcribing) {
-                // Start EXE transcription in background, output to file
                 std::string cmd = "start /B Debug/audio_transcriber.exe --device " + std::to_string(devices[current_device].index) + " > transcription.txt";
                 system(cmd.c_str());
                 transcribing = true;
             } else {
-                // Stopping: user must manually kill exe process for now
                 transcribing = false;
             }
         }
+        ImGui::PopStyleColor(3);
         ImGui::SameLine();
-        if (ImGui::Button("Refresh Devices")) {
+        if (ImGui::Button("Refresh", ImVec2(100, 0))) {
             system("Debug/audio_transcriber.exe --list-devices-json");
             devices = LoadAudioDevicesFromJson();
         }
 
-        // Read and display Q&A from qa_transcription.json
+        ImGui::Separator();
+        ImGui::Spacing();
+
+        // Q&A Chat-like area (responsive, touches bottom)
+        ImGui::BeginChild("QA_Scroll", ImVec2(0, ImGui::GetContentRegionAvail().y), true, ImGuiWindowFlags_AlwaysUseWindowPadding);
         std::ifstream qa_infile("qa_transcription.json");
         transcript.clear();
+        float bubbleWidth = ImGui::GetContentRegionAvail().x;
         if (qa_infile) {
             try {
                 nlohmann::json j;
                 qa_infile >> j;
                 for (const auto& entry : j) {
                     if (entry.contains("question") && entry.contains("answer")) {
-                        transcript += "Q: " + entry["question"].get<std::string>() + "\n";
-                        transcript += "A: " + entry["answer"].get<std::string>() + "\n\n";
+                        // --- User (You:) bubble, full width, fit height ---
+                        const std::string& q = entry["question"].get<std::string>();
+                        ImVec2 qTextSize = ImGui::CalcTextSize(q.c_str(), nullptr, false, bubbleWidth - 32.0f);
+                        float qBubbleHeight = qTextSize.y + ImGui::GetStyle().FramePadding.y * 4 + ImGui::GetTextLineHeight();
+                        ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 8.0f);
+                        ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.13f, 0.55f, 0.95f, 0.35f));
+                        ImGui::BeginChild(ImGui::GetID((q + "_q").c_str()), ImVec2(bubbleWidth, qBubbleHeight), true, ImGuiWindowFlags_AlwaysUseWindowPadding);
+                        ImGui::TextColored(ImVec4(1,1,1,1), "You:");
+                        ImGui::SameLine();
+                        ImGui::PushTextWrapPos(0.0f);
+                        ImGui::TextUnformatted(q.c_str());
+                        ImGui::PopTextWrapPos();
+                        ImGui::EndChild();
+                        ImGui::PopStyleColor();
+                        ImGui::PopStyleVar();
+                        ImGui::Spacing();
+                        // --- AI (AI:) bubble, full width, fit height ---
+                        const std::string& a = entry["answer"].get<std::string>();
+                        ImVec2 aTextSize = ImGui::CalcTextSize(a.c_str(), nullptr, false, bubbleWidth - 32.0f);
+                        float aBubbleHeight = aTextSize.y + ImGui::GetStyle().FramePadding.y * 4 + ImGui::GetTextLineHeight();
+                        ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 8.0f);
+                        ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.18f, 0.18f, 0.20f, 0.85f));
+                        ImGui::BeginChild(ImGui::GetID((a + "_a").c_str()), ImVec2(bubbleWidth, aBubbleHeight), true, ImGuiWindowFlags_AlwaysUseWindowPadding);
+                        ImGui::TextColored(ImVec4(0.2f, 0.8f, 1.0f, 1.0f), "AI:");
+                        ImGui::SameLine();
+                        ImGui::PushTextWrapPos(0.0f);
+                        ImGui::TextUnformatted(a.c_str());
+                        ImGui::PopTextWrapPos();
+                        ImGui::EndChild();
+                        ImGui::PopStyleColor();
+                        ImGui::PopStyleVar();
+                        ImGui::Spacing();
                     }
                 }
             } catch (...) {
-                transcript = "[Error reading qa_transcription.json]";
+                ImGui::TextColored(ImVec4(1,0,0,1), "[Error reading qa_transcription.json]");
             }
+        } else {
+            ImGui::Text("No Q&A transcript available.");
         }
-        strncpy(transcript_buf, transcript.c_str(), sizeof(transcript_buf)-1);
-        transcript_buf[sizeof(transcript_buf)-1] = '\0';
-        ImGui::InputTextMultiline("Q&A Transcript", transcript_buf, sizeof(transcript_buf), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16), ImGuiInputTextFlags_ReadOnly);
-
+        ImGui::EndChild();
         ImGui::End();
 
         if (!show_overlay) {
